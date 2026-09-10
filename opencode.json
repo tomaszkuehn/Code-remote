@@ -1,0 +1,41 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "ijfw-memory": {
+      "type": "local",
+      "command": [
+        "node",
+        "C:\\Users\\TWOJ-USER\\.ijfw\\mcp-server\\src\\server.js"
+      ],
+      "enabled": true
+    }
+  },
+  "permission": {
+    "read": {
+      "*": "allow"
+    },
+    "edit": {
+      "*": "allow",
+      "..*": "ask",
+      "?:*": "ask",
+      "\\\\*": "ask"
+    },
+    "external_directory": {
+      "*": "allow"
+    },
+    "bash": {
+      "*": "allow"
+    }
+  },
+  "plugin": [
+    "@sarctiann/opencode-quota"
+  ],
+  "instructions": [
+    "C:\\Users\\TWOJ-USER\\.config\\opencode\\instructions.md"
+  ],
+  "provider": {
+    "openrouter": {},
+    "deepseek": {},
+    "ollama-cloud": {}
+  }
+}

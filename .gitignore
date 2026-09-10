@@ -1,0 +1,17 @@
+# prywatne konfiguracje bota (token bota, whitelist ID)
+.env
+*.env
+!.env.example
+settings.json*
+logs/
+run/
+
+# cache / stan bota i opencode
+node_modules/
+*.log
+*.db
+*.sqlite*
+
+# system
+Thumbs.db
+.DS_Store
