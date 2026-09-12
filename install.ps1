@@ -174,18 +174,27 @@ try {
 if ($health) { Ok "Serwer opencode: http://localhost:4096 odpowiada" }
 else { Warn "Serwer opencode nie odpowiada - sprawdz: Get-ScheduledTaskInfo opencode-serve" }
 
-$botOut = "$env:TEMP\opencode-bot-start.log"
-$botErr = "$env:TEMP\opencode-bot-start.err"
-$bot = Start-Process -FilePath (Join-Path $npmPrefix "opencode-telegram.cmd") -ArgumentList "start" -WorkingDirectory $env:USERPROFILE -WindowStyle Hidden -PassThru -RedirectStandardOutput $botOut -RedirectStandardError $botErr
-Start-Sleep -Seconds 8
-if ($bot.HasExited) {
-  Warn "Bot zakonczyl sie natychmiast - log: $botErr"
-  Get-Content $botErr -ErrorAction SilentlyContinue | Select-Object -First 10
+$botCmd = Join-Path $npmPrefix "opencode-telegram.cmd"
+if (Test-Path $botCmd) {
+  Start-Process -FilePath $botCmd -ArgumentList "start", "--daemon" -WindowStyle Hidden -Wait
+  Start-Sleep -Seconds 6
+  if (Test-Path (Join-Path $botDir "run\bot-service.json")) {
+    Ok "Bot (daemon) dziala - logi: $botDir\logs"
+  } else {
+    Warn "Bot nie wystartowal - sprawdz logi: $botDir\logs"
+  }
+}
+
+# ---------- 7. Ikona tray + autostart (serwer + bot) ----------
+Step "Instalacja ikony tray i autostartu (opencode-tray)"
+$trayInstaller = Join-Path $srcDir "install-tray.ps1"
+if (Test-Path $trayInstaller) {
+  & powershell -NoProfile -ExecutionPolicy Bypass -File $trayInstaller
 } else {
-  Ok "Bot dziala (PID $($bot.Id)) - log: $botOut"
-  Get-Content $botOut -Tail 3
+  Warn "Brak install-tray.ps1 - ikona tray pominięta"
 }
 
 Write-Host ""
 Write-Host "GOTOWE. Otworz czat z botem w Telegramie i wyslij /status" -ForegroundColor Magenta
+Write-Host "Ikona tray 'OC' pokazuje stan serwera i bota." -ForegroundColor Magenta
 Write-Host "Wiecej w README-INSTALACJA.md obok skryptu" -ForegroundColor Magenta
