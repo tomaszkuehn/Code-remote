@@ -1,4 +1,4 @@
-# prywatne konfiguracje bota (token bota, whitelist ID)
+# private bot configuration (bot token, whitelist ID)
 .env
 *.env
 !.env.example
@@ -6,7 +6,7 @@ settings.json*
 logs/
 run/
 
-# cache / stan bota i opencode
+# bot and opencode cache / state
 node_modules/
 *.log
 *.db

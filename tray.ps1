@@ -1,5 +1,5 @@
-# Tray dla zdalnego opencode: serwer (4096) + bot Telegram
-# Uruchamiany przez launch-tray.vbs (bez okna). Startuje z systemem (zadanie opencode-tray).
+# Tray for remote opencode: server (4096) + Telegram bot
+# Started by launch-tray.vbs (windowless). Starts at logon (task opencode-tray).
 
 $ErrorActionPreference = "SilentlyContinue"
 Add-Type -AssemblyName System.Windows.Forms
@@ -48,9 +48,15 @@ function Get-TelegramUser {
   return $null
 }
 
+$script:telegramOffFlag = Join-Path $botDir "run\telegram-disabled"
+function Get-TelegramEnabled { return -not (Test-Path $script:telegramOffFlag) }
+function Enable-Telegram  { Remove-Item $script:telegramOffFlag -Force -ErrorAction SilentlyContinue; Start-Bot }
+function Disable-Telegram { New-Item -ItemType File -Path $script:telegramOffFlag -Force | Out-Null; Stop-Bot }
+
 function Start-Bot {
   if (-not $script:botCmd) { return }
   if (Get-BotPid) { return }
+  if (-not (Get-TelegramEnabled)) { return }
   Start-Process -FilePath $script:botCmd -ArgumentList "start", "--daemon" -WindowStyle Hidden -Wait
 }
 function Stop-Bot {
@@ -106,16 +112,17 @@ $menu = New-Object System.Windows.Forms.ContextMenuStrip
 $statusItem = $menu.Items.Add("Status: ...")
 $statusItem.Enabled = $false
 [void]$menu.Items.Add((New-Object System.Windows.Forms.ToolStripSeparator))
-$openTgItem   = $menu.Items.Add("Otworz czat w Telegramie")
-$restartBot   = $menu.Items.Add("Restart bota Telegram")
-$restartSrv   = $menu.Items.Add("Restart serwera opencode")
-$startAllItem = $menu.Items.Add("Uruchom wszystko")
+$openTgItem   = $menu.Items.Add("Open Telegram chat")
+$toggleTgItem = $menu.Items.Add("Telegram communication: enabled")
+$restartBot   = $menu.Items.Add("Restart Telegram bot")
+$restartSrv   = $menu.Items.Add("Restart opencode server")
+$startAllItem = $menu.Items.Add("Start everything")
 [void]$menu.Items.Add((New-Object System.Windows.Forms.ToolStripSeparator))
-$logsItem     = $menu.Items.Add("Logi bota")
-$cfgItem      = $menu.Items.Add("Folder konfiguracji")
-$autoItem     = $menu.Items.Add("Autostart z systemem")
+$logsItem     = $menu.Items.Add("Bot logs")
+$cfgItem      = $menu.Items.Add("Config folder")
+$autoItem     = $menu.Items.Add("Start with system")
 [void]$menu.Items.Add((New-Object System.Windows.Forms.ToolStripSeparator))
-$exitItem     = $menu.Items.Add("Zamknij ikone w tray")
+$exitItem     = $menu.Items.Add("Close tray icon")
 
 $openTgItem.Add_Click({
   if ($script:telegramUser) { Start-Process "https://t.me/$script:telegramUser" }
@@ -124,6 +131,10 @@ $openTgItem.Add_Click({
 $restartBot.Add_Click({ Restart-Bot })
 $restartSrv.Add_Click({ Restart-Server })
 $startAllItem.Add_Click({ Start-Server; Start-Bot })
+$toggleTgItem.Add_Click({
+  if (Get-TelegramEnabled) { Disable-Telegram } else { Enable-Telegram }
+  Refresh-Status
+})
 $logsItem.Add_Click({
   $latest = Get-ChildItem $logsDir -Filter *.log | Sort-Object LastWriteTime -Descending | Select-Object -First 1
   if ($latest) { Start-Process notepad.exe $latest.FullName } else { Start-Process explorer.exe $logsDir }
@@ -148,20 +159,23 @@ $tray.Visible = $true
 
 function Refresh-Status {
   $srv = Test-Server
+  $tgEnabled = Get-TelegramEnabled
   $bot = (Get-BotPid) -ne 0
   if ($srv -and $bot) {
     $tray.Icon = $script:iconGreen
-    $tray.Text = "OpenCode Remote: serwer OK, bot OK"
+    $tray.Text = "OpenCode Remote: server OK, bot OK"
   } elseif ($srv) {
     $tray.Icon = $script:iconYellow
-    $tray.Text = "OpenCode Remote: serwer OK, bot STOP"
+    $tray.Text = "OpenCode Remote: server OK, bot STOPPED"
   } else {
     $tray.Icon = $script:iconRed
-    $tray.Text = "OpenCode Remote: serwer STOP"
+    $tray.Text = "OpenCode Remote: server STOPPED"
   }
-  $statusItem.Text = "Serwer: $(if($srv){'dziala'}else{'stop'})   |   Bot: $(if($bot){'dziala'}else{'stop'})"
+  $botText = if (-not $tgEnabled) { "disabled" } elseif ($bot) { "running" } else { "stopped" }
+  $statusItem.Text = "Server: $(if($srv){'running'}else{'stopped'})   |   Bot: $botText"
+  $toggleTgItem.Text = "Telegram communication: $(if($tgEnabled){'enabled (click to disable)'}else{'DISABLED (click to enable)'})"
   $t = Get-ScheduledTask -TaskName "opencode-tray" -ErrorAction SilentlyContinue
-  $autoItem.Text = "Autostart z systemem: $(if($t -and $t.State -ne 'Disabled'){'wlaczony'}else{'wylaczony'})"
+  $autoItem.Text = "Start with system: $(if($t -and $t.State -ne 'Disabled'){'enabled'}else{'disabled'})"
 }
 $tray.Add_MouseDoubleClick({ if ($script:telegramUser) { Start-Process "https://t.me/$script:telegramUser" } })
 

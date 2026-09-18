@@ -5,7 +5,7 @@
       "type": "local",
       "command": [
         "node",
-        "C:\\Users\\TWOJ-USER\\.ijfw\\mcp-server\\src\\server.js"
+        "C:\\Users\\YOUR-USER\\.ijfw\\mcp-server\\src\\server.js"
       ],
       "enabled": true
     }
@@ -31,7 +31,7 @@
     "@sarctiann/opencode-quota"
   ],
   "instructions": [
-    "C:\\Users\\TWOJ-USER\\.config\\opencode\\instructions.md"
+    "C:\\Users\\YOUR-USER\\.config\\opencode\\instructions.md"
   ],
   "provider": {
     "openrouter": {},

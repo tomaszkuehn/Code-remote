@@ -1,6 +1,6 @@
 # Instalacja zdalnego opencode na nowym komputerze
 
-Zestaw: opencode (npm) + serwer na porcie 4096 + bot Telegram (`@grinev/opencode-telegram-bot`) + plugin dźwięków/auto-kontynuacji + komenda `/pomoc` + ikona w tray (autostart serwera i bota przy logowaniu).
+Zestaw: opencode (npm) + serwer na porcie 4096 + bot Telegram (`@grinev/opencode-telegram-bot`) + plugin dźwięków/auto-kontynuacji + komenda `/guide` + ikona w tray (autostart serwera i bota przy logowaniu).
 
 Folder jest **bez danych prywatnych** (żadnych tokenów/ID/userów) — prywatne dane wpisujesz tylko przy instalacji:
 - token bota tworzysz sam przez @BotFather (`/newbot`),
@@ -67,7 +67,7 @@ systemctl --user restart opencode-bot     # po zmianie plików
 | `instructions.md` | `~\.config\opencode\` | zasady zwięzłości dla modelu |
 | `sound.js` | `~\.config\opencode\plugins\` | dźwięki + auto-wznawianie urwanych odpowiedzi |
 | `package.json` | `~\.config\opencode\` | dep `@opencode-ai/plugin` |
-| `pomoc.js` / generowany `pomoc.json` | `%APPDATA%\opencode-telegram-bot\local-commands\` | komenda `/pomoc` w bocie |
+| `guide.js` / generowany `guide.json` | `%APPDATA%\opencode-telegram-bot\local-commands\` | komenda `/guide` w bocie |
 | `tray.ps1` + `launch-tray.vbs` | — (zostają w folderze) | ikona w tray: stan serwera i bota, restart, logi |
 | `install-tray.ps1` | — | rejestruje autostart ikony tray (`opencode-tray`) |
 
@@ -85,7 +85,7 @@ Co robi skrypt (kolejno):
 1. sprawdza/instaluje Node.js 22+ (winget, LTS),
 2. `npm install -g opencode-ai` + `@grinev/opencode-telegram-bot`,
 3. kopiuje configi do `~\.config\opencode\`, dopasowuje ścieżki usera, usuwa wpis MCP jeśli nie dotyczy, instaluje dep pluginu,
-4. tworzy `%APPDATA%\opencode-telegram-bot\.env` (token, whitelist, model) + `/pomoc`,
+4. tworzy `%APPDATA%\opencode-telegram-bot\.env` (token, whitelist, model) + `/guide`,
 5. rejestruje autostart serwera (zadanie `opencode-serve`, przy logowaniu) i startuje go,
 6. startuje bota (daemon) i wypisuje PID,
 7. rejestruje ikonę tray (zadanie `opencode-tray`, przy logowaniu) — zielona ikona `OC` = serwer i bot działają.
@@ -126,7 +126,7 @@ cd D:\kody\code-remote
 |---|---|
 | Bot nie odpowiada na `/status` | sprawdz log (Win: `%APPDATA%\opencode-telegram-bot\logs\`, Lin: `journalctl --user -u opencode-bot -f`); whitelist ID w `.env` musi się zgadzać z Twoim ID (sec. „Pozyskanie identyfikatorów”); zły token = bot nie startuje |
 | Zły token / bot wypada z błędem 401 | token od @BotFather skopiowany niecały — wygeneruj `/token` w @BotFather dla istniejącego bota i wklej do `.env`, restart bota |
-| `Command failed` przy `/pomoc` | w `pomoc.json` `exec` musi mieć pełną ścieżkę (bez `%APPDATA%`) |
+| `Command failed` przy `/guide` | w `guide.json` `exec` musi mieć pełną ścieżkę (bez `%APPDATA%`) |
 | Brak modeli w bocie | nie zalogowany provider — uruchom `opencode` w TUI i zaloguj się |
 | Serwer nie startuje po restarcie | `Start-ScheduledTask opencode-serve`; log: `Get-ScheduledTaskInfo opencode-serve` |
 | Bot działa tylko do restartu | Windows: ikona tray startuje go przy logowaniu (prawy przycisk → „Uruchom wszystko”), lub `opencode-telegram start --daemon`; Linux: `systemctl --user enable --now opencode-bot` |
