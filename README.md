@@ -9,7 +9,7 @@ Polish installation guide: [INSTALACAJA.md](INSTALACAJA.md).
 | Piece | What it does |
 |---|---|
 | `install.ps1` (Windows) / `install.sh` (Linux) | One-shot installer |
-| `opencode.json`, `instructions.md`, `package.json` | opencode config (permissions, plugins, providers, model instructions) |
+| `opencode.json`, `package.json` | opencode config (permissions, plugins, providers) |
 | `sound.js` | Plugin: plays a sound on permission/question and auto-continues responses cut off by the output token limit |
 | `guide.js` | `/guide` command content for the bot |
 | `tray.ps1` + `launch-tray.vbs` + `install-tray.ps1` | Windows tray icon: server/bot status, restarts, logs, Telegram on/off, autostart |

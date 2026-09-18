@@ -70,7 +70,6 @@ New-Item -ItemType Directory -Force -Path $ocCfgDir, $ocPlugDir | Out-Null
 $srcDir = $PSScriptRoot
 $files = @(
   @{ src = "opencode.json";       dst = "$ocCfgDir\opencode.json" },
-  @{ src = "instructions.md";     dst = "$ocCfgDir\instructions.md" },
   @{ src = "sound.js";            dst = "$ocPlugDir\sound.js" },
   @{ src = "package.json";        dst = "$ocCfgDir\package.json" }
 )

@@ -30,9 +30,6 @@
   "plugin": [
     "@sarctiann/opencode-quota"
   ],
-  "instructions": [
-    "C:\\Users\\YOUR-USER\\.config\\opencode\\instructions.md"
-  ],
   "provider": {
     "openrouter": {},
     "deepseek": {},

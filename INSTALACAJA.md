@@ -63,8 +63,7 @@ systemctl --user restart opencode-bot     # po zmianie plików
 | Plik | Dokąd trafia | Co to |
 |---|---|---|
 | `install.ps1` (Windows) / `install.sh` (Linux) | — | Instalator (uruchamiasz tylko jeden) |
-| `opencode.json` | `~\.config\opencode\` | uprawnienia, pluginy, instrukcje, providery |
-| `instructions.md` | `~\.config\opencode\` | zasady zwięzłości dla modelu |
+| `opencode.json` | `~\.config\opencode\` | uprawnienia, pluginy, providery |
 | `sound.js` | `~\.config\opencode\plugins\` | dźwięki + auto-wznawianie urwanych odpowiedzi |
 | `package.json` | `~\.config\opencode\` | dep `@opencode-ai/plugin` |
 | `guide.js` / generowany `guide.json` | `%APPDATA%\opencode-telegram-bot\local-commands\` | komenda `/guide` w bocie |

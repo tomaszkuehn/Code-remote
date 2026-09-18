@@ -96,7 +96,7 @@ OC_PLUG="$OC_CFG/plugins"
 mkdir -p "$OC_PLUG"
 SRC="$(cd "$(dirname "$0")" && pwd)"
 
-for f in opencode.json instructions.md package.json; do
+for f in opencode.json package.json; do
   if [ -f "$SRC/$f" ]; then
     cp -f "$SRC/$f" "$OC_CFG/$f"
     ok "Copied $OC_CFG/$f"
