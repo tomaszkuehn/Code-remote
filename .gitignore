@@ -2,16 +2,38 @@
 .env
 *.env
 !.env.example
-settings.json*
+settings.json
+settings.json.*
 logs/
 run/
+local-commands/
 
 # bot and opencode cache / state
 node_modules/
+npm-debug.log*
+yarn-error.log*
 *.log
 *.db
 *.sqlite*
+.opencode/
 
-# system
+# secrets and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+auth.json
+
+# OS
 Thumbs.db
+Desktop.ini
 .DS_Store
+._*
+
+# editors
+.vscode/
+.idea/
+*.swp
+*~
